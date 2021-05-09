@@ -1,19 +1,22 @@
-import objects
-import simulationEnvironment
+import objects.churrumino
+import objects.members
+import objects.food
+import simulationEnvironment.map
 
+mapa = simulationEnvironment.map.Map((10, 10))
 carlito = objects.churrumino.Churrumino(
     objects.members.ReproductiveOrgan((0.2, 0.1, 0.1), 0.3),
     objects.members.Body((0.6, 0.2, 0.5), 3, 100),
     objects.members.Legs((0.01, 1, 0.01), 0.05),
     objects.members.Eyes((0.05, 0.05, 0.05), 0.01),
-    0
+    0,
+    mapa
 )
 
-mapa = simulationEnvironment.map.Map((10, 10))
-mapa.setPosition((0, 0), carlito)
+mapa.setPosition((7, 0), carlito)
+carlito.walk((-1, 0))
 
-for linha in mapa.map:
-    print(linha)
+print(mapa)
 
 '''
 print('Carlito\nGasto de energia por movimento: {}\nBeleza: {}\nCapacidade maxima de geração de proli: {}\nCapacidade maxima de armazenamento de energia: {}\nVelocidade máxima: {}\nRaio de visao: {}'.format(

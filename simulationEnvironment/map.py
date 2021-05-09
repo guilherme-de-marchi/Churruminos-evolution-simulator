@@ -17,9 +17,7 @@ class Map:
             self.map = default
         
         else:
-            self.map = [[None for x in range(size[0])] for y in range(size[1])]
-
-        self.SIZE = (len(self.map[0]), len(self.map))
+            self.map = [[[] for x in range(size[0])] for y in range(size[1])]
 
     def validatePosition(self, position: tuple) -> bool:
         '''
@@ -27,6 +25,9 @@ class Map:
         '''
 
         assert isinstance(position, tuple), 'arg: "position" must be a tuple object'
+
+        if position[0] < 0 or position[1] < 0:
+            return False
 
         try:
             test = self.map[position[1]][position[0]]
@@ -65,5 +66,9 @@ class Map:
 
         assert isinstance(target_position, tuple), 'arg: "target_position" must be a tuple object'
 
-        self.setPosition(target_position, target_object)
-        self.map[target_object.position[1]][target_object.position[0]].remove(target_object)
+        if self.validatePosition(target_position):
+            self.map[target_object.position[1]][target_object.position[0]].remove(target_object)
+            self.setPosition(target_position, target_object)
+
+    def __str__(self):
+        return '\n'.join([str(row) for row in self.map])

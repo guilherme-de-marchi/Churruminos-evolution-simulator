@@ -7,7 +7,8 @@ class Churrumino(Object):
                         body: 'Body',
                         legs: 'Legs',
                         eyes: 'Eyes',
-                        inclination: float):
+                        inclination: float,
+                        map: 'Map'):
         '''
         args: inclination -> n in degrees
         '''
@@ -34,3 +35,15 @@ class Churrumino(Object):
         ]])
 
         self.attractiveness = reduce(lambda a, b: a * b, self.reproductive_organ.SIZE) + self.legs.HEIGHT
+
+        self.map = map
+
+    def walk(self, direction: tuple):
+        '''
+        arg: direction -> ([-1: left, 1: right], [-1: up, 1: down])
+        '''
+
+        assert isinstance(direction, tuple), 'arg: "direction" must be a tuple object'
+
+        target_position = (self.position[0] + direction[0], self.position[1] + direction[1])
+        self.map.moveTo(target_position, self)
