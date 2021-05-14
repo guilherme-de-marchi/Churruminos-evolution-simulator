@@ -3,11 +3,11 @@ from objects import members
 from objects.object import Object
 
 class Churrumino(Object):
-    def __init__(self, reproductive_organ: 'ReproductiveOrgan',
-                        body: 'Body',
-                        legs: 'Legs',
-                        eyes: 'Eyes',
+    def __init__(self, reproductive_organ: members.ReproductiveOrgan,
+                        body: members.Body,
+                        legs: members.Legs,
                         inclination: float,
+                        char: str,
                         map: 'Map'):
         '''
         args: inclination -> n in degrees
@@ -16,25 +16,23 @@ class Churrumino(Object):
         assert isinstance(reproductive_organ, members.ReproductiveOrgan), 'arg: "reproductive_organ" must be a ReproductiveOrgan object'
         assert isinstance(body, members.Body), 'arg: "body" must be a Body object'
         assert isinstance(legs, members.Legs), 'arg: "legs" must be a Legs object'
-        assert isinstance(eyes, members.Eyes), 'arg: "eyes" must be an Eyes object'
         assert isinstance(inclination, (float, int)), 'arg: "inclination" must be a float or int object'
 
-        super().__init__()
+        super().__init__(char)
 
         self.reproductive_organ = reproductive_organ
         self.body = body
         self.legs = legs
-        self.eyes = eyes
         self.inclination = inclination
 
-        self.ENERGY_EXPENDITURE_PER_MOVIMENT = sum([member.WEIGHT for member in [
+        self.WEIGHT = sum([member.WEIGHT for member in [
             self.reproductive_organ,
             self.body,
-            self.legs,
-            self.eyes
+            self.legs
         ]])
 
         self.attractiveness = reduce(lambda a, b: a * b, self.reproductive_organ.SIZE) + self.legs.HEIGHT
+        self.target = None
 
         self.map = map
 
@@ -47,3 +45,28 @@ class Churrumino(Object):
 
         target_position = (self.position[0] + direction[0], self.position[1] + direction[1])
         self.map.moveTo(target_position, self)
+        self.body.spendEnergy(self.WEIGHT)
+
+    def goTo(self, target: 'Object'):
+        '''
+        arg: target -> an "Object"
+        '''
+
+        assert(target, Object), 'arg: "target" must be an Object object'
+
+        direction = []
+
+        for n in range(len(self.position)):
+            value = 0
+            subtraction = self.position[n] - target.position[n]
+
+            if subtraction:
+                value = -subtraction / abs(subtraction)
+
+            direction.append(int(value))
+        
+        return tuple(direction)
+
+    def whatNeed(self):
+        return 'food' if self.body.stored_energy <= self.body.ENERGY_STORAGE_CAPACITY / 2 else 'procreate'
+        

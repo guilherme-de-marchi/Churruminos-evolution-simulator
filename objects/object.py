@@ -1,5 +1,6 @@
 class Object:
-    def __init__(self):
+    def __init__(self, char: str):
+        self.char = char
         self.position = (None, None)
 
     def updatePosition(self, target_position: tuple):

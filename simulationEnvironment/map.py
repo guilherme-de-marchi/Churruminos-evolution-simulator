@@ -1,23 +1,15 @@
 class Map:
-    def __init__(self, size: tuple, default: list = None):
+    def __init__(self, size: tuple, void_char: 'str'):
         '''
         args: size -> (width, height)
-        default -> [
-            [n, n, n, n, ...],
-            [n, n, n, n, ...],
-            [n, n, n, n, ...],
-            ...
-        ]
         '''
 
         assert isinstance(size, tuple), 'arg: "size" must be a tuple object'
-        if default:
-            assert isinstance(default, list), 'arg: "default" must be a list object'
-
-            self.map = default
+        assert isinstance(void_char, str), 'arg: "void_char" must be a str object'
         
-        else:
-            self.map = [[[] for x in range(size[0])] for y in range(size[1])]
+        self.map = [[[] for x in range(size[0])] for y in range(size[1])]
+        self.SIZE = size
+        self.void_char = void_char
 
     def validatePosition(self, position: tuple) -> bool:
         '''
@@ -69,6 +61,9 @@ class Map:
         if self.validatePosition(target_position):
             self.map[target_object.position[1]][target_object.position[0]].remove(target_object)
             self.setPosition(target_position, target_object)
+
+    def render(self):
+        return [[column[-1].char if len(column) else self.void_char for column in row] for row in self.map]
 
     def __str__(self):
         return '\n'.join([str(row) for row in self.map])
