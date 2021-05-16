@@ -1,6 +1,7 @@
 from functools import reduce
 from objects import members
 from objects.object import Object
+from simulationEnvironment.map import Map
 
 class Churrumino(Object):
     def __init__(self, reproductive_organ: members.ReproductiveOrgan,
@@ -8,7 +9,7 @@ class Churrumino(Object):
                         legs: members.Legs,
                         inclination: float,
                         char: str,
-                        map: 'Map'):
+                        map: Map):
         '''
         args: inclination -> n in degrees
         '''
@@ -45,7 +46,7 @@ class Churrumino(Object):
 
         target_position = (self.position[0] + direction[0], self.position[1] + direction[1])
         self.map.moveTo(target_position, self)
-        self.body.spendEnergy(self.WEIGHT)
+        self.body.spendEnergy(self.WEIGHT / 4)
 
     def goTo(self, target: 'Object'):
         '''
@@ -68,5 +69,14 @@ class Churrumino(Object):
         return tuple(direction)
 
     def whatNeed(self):
-        return 'food' if self.body.stored_energy <= self.body.ENERGY_STORAGE_CAPACITY / 2 else 'procreate'
+        return 'food' if self.body.stored_energy <= self.body.ENERGY_STORAGE_CAPACITY / 2 else 'churrumino'
         
+    def useTarget(self):
+        what_need = self.whatNeed()
+
+        if what_need == 'food':
+            self.body.supplyEnergy(self.target)
+            self.map.removeFrom(self.target.position, self.target)
+        
+        elif what_need == 'churrumino':
+            self.target = None

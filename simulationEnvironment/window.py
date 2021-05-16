@@ -5,9 +5,9 @@ class Window:
         self.window = curses.initscr()
         curses.noecho()
 
-    def print(self, target: list):
+    def print(self, *args: str):
         self.window.clear()
-        for row in target:
-            self.window.addstr(''.join(row) + '\n')
+        for arg in args:
+            self.window.addstr(arg + '\n')
 
         self.window.refresh()
